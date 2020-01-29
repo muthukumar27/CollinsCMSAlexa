@@ -95,7 +95,7 @@ namespace CESController_AWSLambda
             skillResponse.Version = skillRespVersion;
         }
 
-        abstract public SkillResponse HandleIntentRequest(IntentRequest request);
+        abstract public Task<SkillResponse> HandleIntentRequest(IntentRequest request);
 
     }
 }

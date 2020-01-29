@@ -26,26 +26,39 @@ namespace CESController_AWSLambda
 
         private void LoadConfiguredVidSrcList()
         {
-            configuredVidSrcList.Add("blu-ray 1", new VideoSource("Blu-Ray 1", "BDP1", false));
-            configuredVidSrcList.Add("blu-ray 2", new VideoSource("Blu-Ray 2", "BDP2", false));
-            configuredVidSrcList.Add("blu-ray 3", new VideoSource("Blu-Ray 3", "BDP3", false));
-            configuredVidSrcList.Add("blu-ray 4", new VideoSource("Blu-Ray 4", "BDP4", false));
-            configuredVidSrcList.Add("your flight", new VideoSource("Your Flight", "MMEURL1", false));
-            configuredVidSrcList.Add("auto play", new VideoSource("Auto Play", "MMEURL6", false));
-            configuredVidSrcList.Add("maps", new VideoSource("Maps", "MMEURL2", false));
-            configuredVidSrcList.Add("high resolution maps", new VideoSource("High Resolution Maps", "MMEURL3", false));
-            configuredVidSrcList.Add("logo", new VideoSource("Logo", "MMEURL4", false));
-            configuredVidSrcList.Add("rli", new VideoSource("RLI", "MMEURL5", false));
-            configuredVidSrcList.Add("hdmi", new VideoSource("HDMI", "HDMI", false));
+            configuredVidSrcList.Add("blu-ray 1", new VideoSource { DeviceType = "BDP",Instance = 1, IsDeviceNumberRequired = false});
+            configuredVidSrcList.Add("hdmi", new VideoSource { DeviceType = "HDMI", Instance = 5, IsDeviceNumberRequired = false });
+            configuredVidSrcList.Add("forward camera", new VideoSource { DeviceType = "CAMERA", Instance = 1, IsDeviceNumberRequired = false });
+            configuredVidSrcList.Add("blu-ray 2", new VideoSource { DeviceType = "BDP", Instance = 2, IsDeviceNumberRequired = false });
+            configuredVidSrcList.Add("blu-ray 3", new VideoSource { DeviceType = "BDP", Instance = 3, IsDeviceNumberRequired = false });
+            configuredVidSrcList.Add("left camera", new VideoSource { DeviceType = "CAMERA", Instance = 3, IsDeviceNumberRequired = false });
+            configuredVidSrcList.Add("blu-ray 4", new VideoSource { DeviceType = "BDP", Instance = 4, IsDeviceNumberRequired = false });
+            configuredVidSrcList.Add("bdp1", new VideoSource { DeviceType = "BDP", Instance = 1, IsDeviceNumberRequired = false });
+            configuredVidSrcList.Add("bdp2", new VideoSource { DeviceType = "BDP", Instance = 2, IsDeviceNumberRequired = false });
+            configuredVidSrcList.Add("bdp3", new VideoSource { DeviceType = "BDP", Instance = 3, IsDeviceNumberRequired = false });
+            configuredVidSrcList.Add("bdp4", new VideoSource { DeviceType = "BDP", Instance = 4, IsDeviceNumberRequired = false });
+            configuredVidSrcList.Add("ipod", new VideoSource { DeviceType = "iPod", Instance = 20, IsDeviceNumberRequired = false });
 
-            configuredVidSrcList.Add("forward camera", new VideoSource("Forward Camera", "Camera1", false));
-            configuredVidSrcList.Add("aft camera", new VideoSource("Aft Camera", "Camera2", false));
-            configuredVidSrcList.Add("left camera", new VideoSource("Left Camera", "Camera4", false));
-            configuredVidSrcList.Add("right camera", new VideoSource("Right Camera", "Camera5", false));
-            configuredVidSrcList.Add("belly camera", new VideoSource("Belly Camera", "Camera3", false));
-            configuredVidSrcList.Add("down camera", new VideoSource("Down Camera", "Camera3", false));
-            configuredVidSrcList.Add("fin camera", new VideoSource("Fin Camera", "Camera6", false));
-            configuredVidSrcList.Add("glareshield camera", new VideoSource("Glareshield Camera", "Camera7", false));
+            configuredVidSrcList.Add("total route", new VideoSource { DeviceType = "AIRSHOW", Instance = 1, IsDeviceNumberRequired = false });            
+            configuredVidSrcList.Add("high resolution maps", new VideoSource { DeviceType = "AIRSHOW", Instance = 2, IsDeviceNumberRequired = false });
+            configuredVidSrcList.Add("city lights", new VideoSource { DeviceType = "AIRSHOW", Instance = 4, IsDeviceNumberRequired = false });
+            configuredVidSrcList.Add("time zone", new VideoSource { DeviceType = "AIRSHOW", Instance = 5, IsDeviceNumberRequired = false });
+            configuredVidSrcList.Add("airshow", new VideoSource { DeviceType = "AIRSHOW", Instance = 14, IsDeviceNumberRequired = false });
+            configuredVidSrcList.Add("maps", new VideoSource { DeviceType = "AIRSHOW", Instance = 6, IsDeviceNumberRequired = false });
+            configuredVidSrcList.Add("global zoom", new VideoSource { DeviceType = "AIRSHOW", Instance = 7, IsDeviceNumberRequired = false });
+            configuredVidSrcList.Add("compass", new VideoSource { DeviceType = "AIRSHOW", Instance = 9, IsDeviceNumberRequired = false });
+            configuredVidSrcList.Add("your flight", new VideoSource { DeviceType = "AIRSHOW", Instance = 10, IsDeviceNumberRequired = false });
+            configuredVidSrcList.Add("flight information", new VideoSource { DeviceType = "AIRSHOW", Instance = 12, IsDeviceNumberRequired = false });
+            configuredVidSrcList.Add("cycle maps", new VideoSource { DeviceType = "AIRSHOW", Instance = 13, IsDeviceNumberRequired = false });
+            configuredVidSrcList.Add("auto play", new VideoSource { DeviceType = "AIRSHOW", Instance = 14, IsDeviceNumberRequired = false });
+
+            configuredVidSrcList.Add("aft camera", new VideoSource { DeviceType = "CAMERA", Instance = 2, IsDeviceNumberRequired = false });
+            
+            configuredVidSrcList.Add("right camera", new VideoSource { DeviceType = "CAMERA", Instance = 4, IsDeviceNumberRequired = false });
+            configuredVidSrcList.Add("belly camera", new VideoSource { DeviceType = "CAMERA", Instance = 6, IsDeviceNumberRequired = false });
+            configuredVidSrcList.Add("down camera", new VideoSource { DeviceType = "CAMERA", Instance = 6, IsDeviceNumberRequired = false });
+            configuredVidSrcList.Add("fin camera", new VideoSource { DeviceType = "CAMERA", Instance = 5, IsDeviceNumberRequired = false });
+            configuredVidSrcList.Add("glareshield camera", new VideoSource { DeviceType = "CAMERA", Instance = 7, IsDeviceNumberRequired = false });
         }
 
         public bool IsConfigured(string srcName)
@@ -55,7 +68,13 @@ namespace CESController_AWSLambda
 
         public string GetRandomVidSrcName()
         {            
-            return configuredVidSrcList.ElementAt<KeyValuePair<string, VideoSource>>(rand.Next(0, configuredVidSrcList.Count)).Value.Name;
+            return configuredVidSrcList.ElementAt<KeyValuePair<string, VideoSource>>(rand.Next(0, configuredVidSrcList.Count)).Key;
+        }
+
+        public List<string> GetAvailableVidSources()
+        {
+            List<string> availableVidSrcList = new List<string> { "Blu ray players", "HDMI", "iPod"};
+            return availableVidSrcList;
         }
         
     }

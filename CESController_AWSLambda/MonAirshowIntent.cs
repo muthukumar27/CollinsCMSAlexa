@@ -11,14 +11,14 @@ using Newtonsoft.Json;
 
 namespace CESController_AWSLambda
 {
-    public class MonVidSrcIntent : IntentHandler
+    public class MonAirshowIntent : IntentHandler
     {
-        const string MONVIDSRC = "Monitor_Video_Src";
+        const string MONAIRSHOW = "Monitor_Airshow_Mode";
         const string MONITORLOC = "Monitor_Loc";
         //Dictionary<string, VideoSource> vidSrcList;
         VideoSourceHandler vidSrcHandler = new VideoSourceHandler();
 
-        public MonVidSrcIntent()
+        public MonAirshowIntent()
         {
             helpMsg = new StringBuilder("You can say, push Blu-Ray 1 video on forward monitor, or, you can say exit... What can I help you with?");
             rePromptMsg = new StringBuilder("Please say something like, push blu-ray 1 video on forward monitor!");
@@ -30,13 +30,13 @@ namespace CESController_AWSLambda
             var log = curContext.Logger;
             slots = request.Intent.Slots;
            
-            Slot monVidSrcSlot = null;
+            Slot monAirshowSlot = null;
             Slot monLocSlot = null;
 
-            if (slots.ContainsKey(MONVIDSRC))
+            if (slots.ContainsKey(MONAIRSHOW))
             {
-                monVidSrcSlot = slots[MONVIDSRC];
-                log.LogLine($"Slot : Monitor_Video_Src : Value -" + monVidSrcSlot.Value);
+                monAirshowSlot = slots[MONAIRSHOW];
+                log.LogLine($"Slot : Monitor_Video_Src : Value -" + monAirshowSlot.Value);
             }
             if (slots.ContainsKey(MONITORLOC))
             {
@@ -68,47 +68,47 @@ namespace CESController_AWSLambda
             //    skillResponse.Response.OutputSpeech = outSpeech;
             //    return skillResponse;
             //}
-            if (!vidSrcHandler.IsConfigured(monVidSrcSlot.Value.ToLower()))
-            {
-                log.LogLine($"Not Configured - " + monVidSrcSlot.Value);
-                dlgElicitSlot = new DialogElicitSlot(monVidSrcSlot.Name);
-                outSpeech = new PlainTextOutputSpeech();
+            //if (!vidSrcHandler.IsConfigured(monVidSrcSlot.Value.ToLower()))
+            //{
+            //    log.LogLine($"Not Configured - " + monVidSrcSlot.Value);
+            //    dlgElicitSlot = new DialogElicitSlot(monVidSrcSlot.Name);
+            //    outSpeech = new PlainTextOutputSpeech();
 
-                StringBuilder vidSources = new StringBuilder();
-                vidSrcHandler.GetAvailableVidSources().ForEach(vidSrc => vidSources.AppendLine(vidSrc));
+            //    StringBuilder vidSources = new StringBuilder();
+            //    vidSrcHandler.GetAvailableVidSources().ForEach(vidSrc => vidSources.AppendLine(vidSrc));
 
-                (outSpeech as PlainTextOutputSpeech).Text = monVidSrcSlot.Value + " is not available on your aircraft! " + "Currently available video sources are \n" + vidSources.ToString();
-                dlgElicitSlot.UpdatedIntent = request.Intent;
-                skillResponse.Response.Directives.Add(dlgElicitSlot);
-                skillResponse.Response.OutputSpeech = outSpeech;
-                return skillResponse;
-            }
-            else
-            {
-                Monitor_Video_Source monVidSrcMsg = new Monitor_Video_Source
+            //    (outSpeech as PlainTextOutputSpeech).Text = monVidSrcSlot.Value + " is not available on your aircraft! " + "Currently available video sources are \n" + vidSources.ToString();
+            //    dlgElicitSlot.UpdatedIntent = request.Intent;
+            //    skillResponse.Response.Directives.Add(dlgElicitSlot);
+            //    skillResponse.Response.OutputSpeech = outSpeech;
+            //    return skillResponse;
+            //}
+            //else
+            //{
+                Monitor_Video_Source monAirshowModeMsg = new Monitor_Video_Source
                 {
-                    DeviceType = vidSrcHandler.ConfiguredVidSrcList[monVidSrcSlot.Value.ToLower()].DeviceType,
-                    Instance = vidSrcHandler.ConfiguredVidSrcList[monVidSrcSlot.Value.ToLower()].Instance,
+                    DeviceType = vidSrcHandler.ConfiguredVidSrcList[monAirshowSlot.Value.ToLower()].DeviceType,
+                    Instance = vidSrcHandler.ConfiguredVidSrcList[monAirshowSlot.Value.ToLower()].Instance,
                     MonitorLocation = monLocSlot.Value
                 };
                                               
                 AlexaMsg msg = new AlexaMsg
                 {
-                    ID = 1000,
+                    ID = 1010,
                     IntentName = request.Intent.Name,
-                    Slot = monVidSrcMsg
+                    Slot = monAirshowModeMsg
 
                 };
 
                 await DynamoDB.PutAlexaMsg(msg);
 
                 outSpeech = new PlainTextOutputSpeech();
-                (outSpeech as PlainTextOutputSpeech).Text = "Alright. " + monVidSrcSlot.Value + " is pushed on " + monLocSlot.Value + " Monitor. Enjoy the show!";
-                //(outSpeech as PlainTextOutputSpeech).Text = "Enjoy the show!!";
+                (outSpeech as PlainTextOutputSpeech).Text = "Alright. " + monAirshowSlot.Value + " Airshow mode is pushed on " + monLocSlot.Value + " Monitor. Have a nice flight!";
+              //(outSpeech as PlainTextOutputSpeech).Text = "Have a nice flight!.";
                 skillResponse.Response.OutputSpeech = outSpeech;
                 skillResponse.Response.ShouldEndSession = true;
 
-            }
+            //}
 
             return skillResponse;
         }

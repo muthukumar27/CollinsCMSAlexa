@@ -19,8 +19,22 @@ namespace CESController_AWSLambda
     public class Function
     {
 
-        const string HelpMessage = "You can say Push Blu-Ray 1 on forward monitor, or, you can say exit... What can I help you with?";
-        const string HelpReprompt = "You can say stream blu-ray 1 video on forward monitor";
+        const string HelpMessage = "Collins cabin system offers you to \n" +
+            "Watch movies on a monitor..... \n" +
+            "track your flight information with high definition 3D maps...... \n" +
+            "And control cabin lighting systems....... You can say something like... \n" +
+            "Push HDMI movie on forward monitor...... \n" +
+            "or Shut off cabin reading lights.";
+        const string HelpReprompt = "You can say push HDMI movie on forward monitor or shut off wash lights!";
+        const string FallBackIntent = "<speak> Sorry, I could not get that <break strength=\"strong\"/>" +
+                            "Collins cabin system offers you to <break strength=\"medium\"/>" +
+                            "Watch movies on a monitor <break strength=\"strong\"/>" +
+                            "track your flight information with live 3D maps <break strength=\"strong\"/>" +
+                            "And control cabin lighting systems <break strength=\"strong\"/>" +
+                            "What would collins cabin system do for you ?. You can say something like <break time=\"400ms\"/>" +
+                            "Push HDMI movie on forward monitor <break time=\"400ms\"/>" +
+                            "or Shut off cabin reading lights. <break time=\"400ms\"/>" +
+                            "</speak>";
         const string StopMessage = "Have a good one!";
         
 
@@ -30,7 +44,7 @@ namespace CESController_AWSLambda
         /// <param name="input"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public SkillResponse FunctionHandler(SkillRequest input, ILambdaContext context)
+        async public Task<SkillResponse> FunctionHandler(SkillRequest input, ILambdaContext context)
         {            
             SkillResponse response = new SkillResponse();
             response.Response = new ResponseBody();
@@ -71,11 +85,36 @@ namespace CESController_AWSLambda
                         innerResponse = new PlainTextOutputSpeech();
                         (innerResponse as PlainTextOutputSpeech).Text = HelpMessage;
                         break;
+                    case "AMAZON.FallbackIntent":
+                        log.LogLine($"AMAZON.FallbackIntent: send HelpMessage");
+                        //innerResponse = new PlainTextOutputSpeech();
+                        //(innerResponse as PlainTextOutputSpeech).Text = FallBackIntent;
+                        innerResponse = new SsmlOutputSpeech();
+                        (innerResponse as SsmlOutputSpeech).Ssml = FallBackIntent;
+                        break;
                     case "Monitor_Video_Source":
                         IntentHandler intentHandler = new MonVidSrcIntent();                        
                         intentHandler.CurContext = context;
-                        return intentHandler.HandleIntentRequest(intentRequest);                        
-                        //break;
+                        SkillResponse resp = await intentHandler.HandleIntentRequest(intentRequest);
+                        return resp;
+                    case "Monitor_Airshow":
+                        IntentHandler monAirshowIntentHandler = new MonAirshowIntent();
+                        monAirshowIntentHandler.CurContext = context;
+                        SkillResponse monAirshowIntentHandlerResp = await monAirshowIntentHandler.HandleIntentRequest(intentRequest);
+                        return monAirshowIntentHandlerResp;
+                    //break;
+
+                    case "List_Video_Sources":
+                        IntentHandler listVidSrcIntentHandler = new ListVidSrcIntent();
+                        listVidSrcIntentHandler.CurContext = context;
+                        SkillResponse listVidSrcResponse = await listVidSrcIntentHandler.HandleIntentRequest(intentRequest);
+                        return listVidSrcResponse;
+
+                    case "Cabin_Wash_Lights":
+                        IntentHandler cabinWashLtsIntentHandler = new WashLtsIntent();
+                        cabinWashLtsIntentHandler.CurContext = context;
+                        SkillResponse washLtResponse = await cabinWashLtsIntentHandler.HandleIntentRequest(intentRequest);
+                        return washLtResponse;
                     default:
                         log.LogLine($"Unknown intent: " + intentRequest.Intent.Name);
                         innerResponse = new PlainTextOutputSpeech();

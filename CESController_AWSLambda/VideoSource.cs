@@ -6,49 +6,31 @@ using System.Threading.Tasks;
 namespace CESController_AWSLambda
 {
     public class VideoSource
-    {
-        string name = string.Empty;
-        string cmdVal = string.Empty;
-        bool isDevNumReq = false;
+    {        
+        //int instance;
+        //string deviceType = string.Empty;
+        //bool isDevNumReq = false;
 
-        public VideoSource(string _name, string _cmdVal, bool _isDevNumReq)
+        //public VideoSource(string _deviceType, int _instance, bool _isDevNumReq)
+        //{
+        //    deviceType = _deviceType;
+        //    instance = _instance;
+        //    isDevNumReq = _isDevNumReq;
+        //}
+        public string DeviceType
         {
-            name = _name;
-            cmdVal = _cmdVal;
-            isDevNumReq = _isDevNumReq;
+            get;
+            set;
         }
-        public string Name
+        public int Instance
         {
-            get
-            {
-                return name;
-            }
-            set
-            {
-                name = value;
-            }
-        }
-        public string CommandValue
-        {
-            get
-            {
-                return cmdVal;
-            }
-            set
-            {
-                cmdVal = value;
-            }
+            get;
+            set;
         }
         public bool IsDeviceNumberRequired
         {
-            get
-            {
-                return isDevNumReq;
-            }
-            set
-            {
-                isDevNumReq = value;
-            }
+            get;
+            set;
         }
     }
 }

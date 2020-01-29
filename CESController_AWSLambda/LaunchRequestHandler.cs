@@ -21,11 +21,13 @@ namespace CESController_AWSLambda
 
         public SkillResponse HandleLaunchRequest(string skillID)
         {
-            outSpeech = new PlainTextOutputSpeech();
+            //outSpeech = new PlainTextOutputSpeech();
+            outSpeech = new SsmlOutputSpeech();            
             switch (skillID)
             {
                 case vidCtrlSkillID:
-                    (outSpeech as PlainTextOutputSpeech).Text = "How may I help you on Rockwell's video system ?";
+                    //(outSpeech as PlainTextOutputSpeech).Text = "How may I help you on Collins Video Control ?";
+                    (outSpeech as SsmlOutputSpeech).Ssml = SsmlDecorate("Hi There!");
                     break;
                 default:
                     (outSpeech as PlainTextOutputSpeech).Text = "How may I help you on Rockwell's CES system ?";
@@ -41,6 +43,11 @@ namespace CESController_AWSLambda
             skillResponse.Response = new ResponseBody();
             skillResponse.Response.ShouldEndSession = false;
             skillResponse.Version = skillRespVersion;
+        }
+
+        private string SsmlDecorate(string speech)
+        {
+            return "<speak>" + speech + "</speak>";
         }
     }
 }
